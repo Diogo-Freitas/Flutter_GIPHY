@@ -14,10 +14,18 @@ class MyHomePage extends StatefulWidget {
 class _MyHomePageState extends State<MyHomePage> {
   final FetchController _controller = FetchController();
 
+  int offset = 0;
+
   @override
   void dispose() {
     _controller.dispose();
     super.dispose();
+  }
+
+  void loadMoreGifs() {
+    setState(() {
+      offset += 20;
+    });
   }
 
   @override
@@ -57,13 +65,15 @@ class _MyHomePageState extends State<MyHomePage> {
               style: const TextStyle(color: Colors.white, fontSize: 18),
               textAlign: TextAlign.center,
               onSubmitted: (value) {
-                setState(() {});
+                setState(() {
+                  offset = 0;
+                });
               },
             ),
             const SizedBox(height: 16),
             Expanded(
               child: FutureBuilder<Map>(
-                future: _controller.fetchData(),
+                future: _controller.fetchData(offset),
                 builder: (context, snapshot) {
                   if (snapshot.connectionState == ConnectionState.waiting) {
                     return const Center(
@@ -80,7 +90,8 @@ class _MyHomePageState extends State<MyHomePage> {
                       ),
                     );
                   } else if (snapshot.hasData) {
-                    return GifGridView(snapshot: snapshot);
+                    return GifGridView(
+                        snapshot: snapshot, loadMoreGifs: loadMoreGifs);
                   } else {
                     return const Center(
                       child: Text(

@@ -4,7 +4,7 @@ import 'dart:convert';
 class GiphyModel {
   final String apiKey = 'qHxJdD1Hrcw4MToDx5g9ThuIJpaJJbSq';
 
-  Future<Map> getResponse([String? search]) async {
+  Future<Map> getResponse([String? search, int offset = 0]) async {
     late Uri uri;
 
     if (search == null) {
@@ -13,8 +13,8 @@ class GiphyModel {
         '/v1/gifs/trending',
         {
           'api_key': apiKey,
-          'limit': '20',
-          'offset': '0',
+          'limit': '19',
+          'offset': '$offset',
           'rating': 'g',
           'bundle': 'messaging_non_clips',
         },
@@ -25,8 +25,8 @@ class GiphyModel {
         '/v1/gifs/search',
         {
           'api_key': apiKey,
-          'limit': '20',
-          'offset': '0',
+          'limit': '19',
+          'offset': '$offset',
           'rating': 'g',
           'bundle': 'messaging_non_clips',
           'q': search,
