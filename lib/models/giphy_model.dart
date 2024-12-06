@@ -1,8 +1,9 @@
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 
 class GiphyModel {
-  final String apiKey = 'qHxJdD1Hrcw4MToDx5g9ThuIJpaJJbSq';
+  final String apiKey = dotenv.get('API_KEY');
 
   Future<Map> getResponse([String? search, int offset = 0]) async {
     late Uri uri;
