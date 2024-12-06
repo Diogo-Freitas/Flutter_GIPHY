@@ -1,7 +1,6 @@
-import 'package:http/http.dart' as http;
+import '../controllers/fetch_controller.dart';
 import 'package:flutter/material.dart';
 import '../widgets/gif_grid_view.dart';
-import 'dart:convert';
 
 class MyHomePage extends StatefulWidget {
   const MyHomePage({super.key, required this.title});
@@ -13,6 +12,14 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
+  final FetchController _controller = FetchController();
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -20,15 +27,17 @@ class _MyHomePageState extends State<MyHomePage> {
         centerTitle: true,
         backgroundColor: Colors.black,
         title: Image.network(
-            "https://developers.giphy.com/branch/master/static/header-logo-0fec0225d189bc0eae27dac3e3770582.gif"),
+          "https://developers.giphy.com/branch/master/static/header-logo-0fec0225d189bc0eae27dac3e3770582.gif",
+        ),
       ),
       backgroundColor: Colors.black,
       body: Padding(
         padding: const EdgeInsets.all(16),
         child: Column(
           children: [
-            const TextField(
-              decoration: InputDecoration(
+            TextField(
+              controller: _controller.fetchController,
+              decoration: const InputDecoration(
                 labelText: 'Pesquisar',
                 labelStyle: TextStyle(color: Colors.white, fontSize: 18),
                 border: OutlineInputBorder(),
@@ -45,13 +54,16 @@ class _MyHomePageState extends State<MyHomePage> {
                   ),
                 ),
               ),
-              style: TextStyle(color: Colors.white, fontSize: 18),
+              style: const TextStyle(color: Colors.white, fontSize: 18),
               textAlign: TextAlign.center,
+              onSubmitted: (value) {
+                setState(() {});
+              },
             ),
             const SizedBox(height: 16),
             Expanded(
               child: FutureBuilder<Map>(
-                future: getResponse(),
+                future: _controller.fetchData(),
                 builder: (context, snapshot) {
                   if (snapshot.connectionState == ConnectionState.waiting) {
                     return const Center(
@@ -85,39 +97,4 @@ class _MyHomePageState extends State<MyHomePage> {
       ),
     );
   }
-}
-
-Future<Map> getResponse([String? search]) async {
-  late Uri uri;
-
-  if (search == null) {
-    uri = Uri.https(
-      'api.giphy.com',
-      '/v1/gifs/trending',
-      {
-        'api_key': 'qHxJdD1Hrcw4MToDx5g9ThuIJpaJJbSq',
-        'limit': '20',
-        'offset': '0',
-        'rating': 'g',
-        'bundle': 'messaging_non_clips',
-      },
-    );
-  } else {
-    uri = Uri.https(
-      'api.giphy.com',
-      '/v1/gifs/search',
-      {
-        'api_key': 'qHxJdD1Hrcw4MToDx5g9ThuIJpaJJbSq',
-        'limit': '20',
-        'offset': '0',
-        'rating': 'g',
-        'bundle': 'messaging_non_clips',
-        'q': search,
-      },
-    );
-  }
-
-  var response = await http.get(uri);
-
-  return json.decode(response.body);
 }
