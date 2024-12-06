@@ -1,3 +1,4 @@
+import 'package:share_plus/share_plus.dart';
 import 'package:giphy/pages/gif_page.dart';
 import 'package:flutter/material.dart';
 
@@ -24,6 +25,11 @@ class GifGridView extends StatelessWidget {
                   builder: (context) =>
                       GifPage(gifData: snapshot.data['data'][index]),
                 ),
+              );
+            },
+            onLongPress: () {
+              Share.share(
+                snapshot.data['data'][index]['images']['fixed_height']['url'],
               );
             },
             child: Image.network(
