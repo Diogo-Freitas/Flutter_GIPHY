@@ -1,3 +1,4 @@
+import 'package:transparent_image/transparent_image.dart';
 import 'package:share_plus/share_plus.dart';
 import 'package:giphy/pages/gif_page.dart';
 import 'package:flutter/material.dart';
@@ -32,8 +33,13 @@ class GifGridView extends StatelessWidget {
                 snapshot.data['data'][index]['images']['fixed_height']['url'],
               );
             },
-            child: Image.network(
-                snapshot.data['data'][index]['images']['fixed_height']['url']),
+            child: FadeInImage.memoryNetwork(
+              placeholder: kTransparentImage,
+              image: snapshot.data['data'][index]['images']['fixed_height']
+                  ['url'],
+              height: 300,
+              fit: BoxFit.cover,
+            ),
           );
         } else {
           return GestureDetector(
